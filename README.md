@@ -75,8 +75,8 @@ LaravelAPIGateway/
 +    |   |   |-- ContactSeeder.php
      |   |   |-- DatabaseSeeder.php
 +    |   |   |-- UserSeeder.php
-+    |   |
-+    |   |-- .gitignore
+     |   |
+     |   |-- .gitignore
      |
 +    |-- docs/
 +    |   |-- user-api.json

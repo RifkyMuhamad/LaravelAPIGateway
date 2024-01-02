@@ -23,28 +23,28 @@ use App\Http\Middleware\ApiAuthMiddleware;
 // });
 
 Route::get('/', function () {
-    return response() -> json([
-        "msg" => "DyoneStrankers use Laravel"
+    return response()->json([
+        "message" => "DyoneStrankers use Laravel",
+        "documentation" => "https://github.com/RifkyMuhamad/LaravelAPIGateway"
     ]);
 });
 
 Route::post('/users', [UserController::class, 'register']);
 Route::post('/users/login', [UserController::class, 'login']);
 
-Route::middleware(ApiAuthMiddleware::class)->group(function (){
+Route::middleware(ApiAuthMiddleware::class)->group(function () {
     Route::get('/users/current', [UserController::class, 'get']);
     Route::patch('/users/current', [UserController::class, 'update']);
     Route::delete('/users/logout', [UserController::class, 'logout']);
 });
 
 Route::get('/dyone', function () {
+    
     $fakeData = [
         'id' => "dyonese",
         'name' => "Dyonese",
         'email' => "dyonese@dyone.com"
     ];
 
-    return response() -> json($fakeData);
+    return response()->json($fakeData);
 });
-
-// Route::post('/users', [UserController::class, 'register']);
