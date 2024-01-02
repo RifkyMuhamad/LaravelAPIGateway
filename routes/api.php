@@ -27,6 +27,9 @@ Route::get('/', function () {
     ]);
 });
 
+Route::post('/users', [UserController::class, 'register']);
+Route::post('/users/login', [UserController::class, 'login']);
+
 Route::get('/dyone', function () {
     $fakeData = [
         'id' => "dyonese",
