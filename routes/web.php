@@ -14,5 +14,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return ['Laravel' => app()->version()];
+    $fakeData = [
+        'id' => 1,
+        'name' => "DyoneStrankers",
+        'email' => "dyone@dyone.com"
+    ];
+
+    return response() -> json([
+        "message" => "DyoneStrankers use Laravel"
+    ]);
 });

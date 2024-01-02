@@ -22,13 +22,9 @@ use App\Http\Controllers\UserController;
 // });
 
 Route::get('/', function () {
-    $fakeData = [
-        'id' => 1,
-        'name' => "DyoneStrankers",
-        'email' => "dyone@dyone.com"
-    ];
-
-    return response() -> json($fakeData);
+    return response() -> json([
+        "msg" => "DyoneStrankers use Laravel"
+    ]);
 });
 
 Route::get('/dyone', function () {
