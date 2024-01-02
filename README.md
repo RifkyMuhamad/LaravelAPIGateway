@@ -41,6 +41,9 @@
      |   |
      |   |-- seeders/
      |
++    |-- docs/
++m    |   |-- user-api.json
+     |
      |-- public/
      |   |-- css/
      |   |
@@ -57,17 +60,36 @@
      |
      |-- storage/
      |   |-- app/
+     |   |   |-- public/
+     |   |   |   |-- .gitignore
+     |   |   |
+     |   |   |-- .gitignore
      |   |
      |   |-- framework/
      |   |   |-- cache/
+     |   |   |   |-- data/
+     |   |   |   |   |-- .gitignore
+     |   |   |   |
+     |   |   |   |-- .gitignore
      |   |   |
      |   |   |-- sessions/
      |   |   |
      |   |   |-- testing/
+     |   |   |
+     |   |   |-- views/
      |   |
      |   |-- logs/
      |
      |-- tests/
+     |   |-- Feature/
+     |   |   |-- ExampleTest.php
++    |   |   |-- UserTest.php
+     |   |
+     |   |-- Unit/
+     |   |   |-- ExampleTest.php
+     |   |
+     |   |-- CreatesApplication.php
+     |   |-- TestCase.php
      |
      |-- vendor/
      |
@@ -76,11 +98,14 @@
      |-- .env.example
      |-- .gitattributes
      |-- .gitignore
++    |-- .phpunit.result.cache
++    |-- .vercelignore
      |-- artisan
      |-- composer.json
      |-- composer.lock
 -    |-- package.json
      |-- phpunit.xml
      |-- README.md
-     |-- vite.config.js
++    |-- vercel.json
+-    |-- vite.config.js
 ```

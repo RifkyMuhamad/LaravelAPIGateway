@@ -70,7 +70,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function loginSuccess():void
+    public function loginSuccess(): void
     {
         $this->seed([UserSeeder::class]);
         $this->post('/users/login', [
@@ -91,7 +91,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function loginFailed():void
+    public function loginFailed(): void
     {
         $this->post('/users/login', [
             "username" => "test",
@@ -109,7 +109,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function loginFailedWrongPassword():void
+    public function loginFailedWrongPassword(): void
     {
         $this->seed([UserSeeder::class]);
         $this->post('/users/login', [
@@ -120,6 +120,181 @@ class UserTest extends TestCase
                 "errors" => [
                     "message" => [
                         "username or password wrong"
+                    ]
+                ]
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function getSuccess()
+    {
+        $this->seed([UserSeeder::class]);
+
+        $this->get('/users/current', [
+            "Authorization" => "test"
+        ])->assertStatus(200)
+            ->assertJson([
+                "data" => [
+                    "username" => "test",
+                    "name" => "test"
+                ]
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function getUnauthorized()
+    {
+        $this->seed([UserSeeder::class]);
+
+        $this->get('/users/current')
+            ->assertStatus(401)
+            ->assertJson([
+                "errors" => [
+                    "message" => [
+                        "unauthorized"
+                    ],
+                ]
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function getInvalidToken()
+    {
+        $this->seed([UserSeeder::class]);
+
+        $this->get('/users/current', [
+            "Authorization" => "salah"
+        ])->assertStatus(401)
+            ->assertJson([
+                "errors" => [
+                    "message" => [
+                        "unauthorized"
+                    ],
+                ]
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function updatePasswordSuccess()
+    {
+        $this->seed([UserSeeder::class]);
+        $oldUser = User::where("username", 'test')->first();
+
+        $this->patch(
+            '/users/current',
+            [
+                "password" => "baru"
+            ],
+            [
+                "Authorization" => "test"
+            ]
+        )->assertStatus(200)
+            ->assertJson([
+                "data" => [
+                    "username" => "test",
+                    "name" => "test"
+                ]
+            ]);
+
+        $newUser = User::where("username", 'test')->first();
+
+        self::assertNotEquals($oldUser->password, $newUser->password);
+    }
+
+    /**
+     * @test
+     */
+    public function updateNameSuccess()
+    {
+        $this->seed([UserSeeder::class]);
+        $oldUser = User::where("username", 'test')->first();
+
+        $this->patch(
+            '/users/current',
+            [
+                "name" => "DyoneStrankers"
+            ],
+            [
+                "Authorization" => "test"
+            ]
+        )->assertStatus(200)
+            ->assertJson([
+                "data" => [
+                    "username" => "test",
+                    "name" => "DyoneStrankers"
+                ]
+            ]);
+
+        $newUser = User::where("username", 'test')->first();
+
+        self::assertNotEquals($oldUser->name, $newUser->name);
+    }
+
+    /**
+     * @test
+     */
+    public function updateFailed()
+    {
+        $this->seed([UserSeeder::class]);
+
+        $this->patch(
+            '/users/current',
+            [
+                "name" => "WleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleo"
+            ],
+            [
+                "Authorization" => "test"
+            ]
+        )->assertStatus(400)
+            ->assertJson([
+                "errors" => [
+                    "name" => [
+                        "The name field must not be greater than 100 characters."
+                    ]
+                ]
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function logoutSuccess()
+    {
+        $this->seed([UserSeeder::class]);
+
+        $this->delete(uri: '/users/logout', headers: [
+            'Authorization' => "test"
+        ])->assertStatus(200)
+            ->assertJson([
+                "data" => true
+            ]);
+
+        $user = User::where("username", "test")->first();
+        self::assertNull($user->token);
+    }
+
+    /**
+     * @test
+     */
+    public function logoutFailed()
+    {
+        $this->seed([UserSeeder::class]);
+
+        $this->delete(uri: '/users/logout', headers: [
+            'Authorization' => "salah"
+        ])->assertStatus(401)
+            ->assertJson([
+                "errors" => [
+                    "message" => [
+                        "unauthorized"
                     ]
                 ]
             ]);
