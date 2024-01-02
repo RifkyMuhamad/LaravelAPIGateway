@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Simple;
 use App\Http\Controllers\UserController;
 
-Route::get('/data', [Simple::class, 'index']);
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,4 +21,24 @@ Route::get('/data', [Simple::class, 'index']);
 //     return $request->user();
 // });
 
-Route::post('/users', [UserController::class, 'register']);
+Route::get('/', function () {
+    $fakeData = [
+        'id' => 1,
+        'name' => "DyoneStrankers",
+        'email' => "dyone@dyone.com"
+    ];
+
+    return response() -> json($fakeData);
+});
+
+Route::get('/dyone', function () {
+    $fakeData = [
+        'id' => "dyonese",
+        'name' => "Dyonese",
+        'email' => "dyonese@dyone.com"
+    ];
+
+    return response() -> json($fakeData);
+});
+
+// Route::post('/users', [UserController::class, 'register']);

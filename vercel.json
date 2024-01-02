@@ -1,20 +1,22 @@
 {
+    "name": "api-gateway-dystr",
     "version": 2,
-    "framework": null,
     "builds": [
         {
             "src": "public/index.php",
             "use": "vercel-php@0.6.0"
         }
     ],
-    "routes": [{
-        "src": "/(.*)",
-        "dest": "public/index.php"
-    }],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "public/index.php"
+        }
+    ],
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "true",
-        "APP_URL": "https://yourproductionurl.com",
+        "APP_URL": "https://dyonestrankers-laravel-api.app/",
  
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
