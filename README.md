@@ -5,15 +5,15 @@
 LaravelAPIGateway/
      |-- app/
      |   |-- Console/
-     |   |   |-- Kernel.php
+     |   |   └── Kernel.php
      |   |
      |   |-- Exceptions/
-     |   |   |-- Handler.php
+     |   |   └── Handler.php
      |   |   
      |   |-- Http/
      |   |   |-- Controllers/
      |   |   |   |-- Controller.php
-+    |   |   |   |-- UserController.php
++    |   |   |   └── UserController.php
      |   |   |
      |   |   |-- Middleware/
 +    |   |   |   |-- ApiAuthMiddleware.php
@@ -25,41 +25,41 @@ LaravelAPIGateway/
      |   |   |   |-- TrustHosts.php
      |   |   |   |-- TrustProxies.php
      |   |   |   |-- ValidateSignature.php
-     |   |   |   |-- VerifyCsrfToken.php
+     |   |   |   └── VerifyCsrfToken.php
      |   |   |
 +    |   |   |-- Requests/
 +    |   |   |   |-- UserLoginRequest.php
 +    |   |   |   |-- UserRegisterRequest.php
-+    |   |   |   |-- UserUpdateRequest.php
++    |   |   |   └── UserUpdateRequest.php
      |   |   |
 +    |   |   |-- Resources/
-+    |   |   |   |-- UserResources.php
++    |   |   |   └── UserResources.php
      |   |   |
-     |   |   |-- Kernal.php
+     |   |   └── Kernal.php
      |   |
 +    |   |-- Models/
 +    |   |   |-- Address.php
 +    |   |   |-- Contact.php
-+    |   |   |-- User.php
++    |   |   └── User.php
      |   |
-     |   |-- Providers/
+     |   └── Providers/
      |       |-- AppServiceProvider.php
      |       |-- AuthServiceProvider.php
      |       |-- BroadcastServiceProvider.php
      |       |-- EventServiceProvider.php
-     |       |-- RouteServiceProvider.php
+     |       └── RouteServiceProvider.php
      |
      |-- bootstrap/
      |   |-- cache/
-     |   |   |-- .gitignore
+     |   |   └── .gitignore
      |   |
-     |   |-- app.php
+     |   └── app.php
      |
      |-- config/
      |
      |-- database/
      |   |-- factories/
-     |   |   |-- UserFactory.php
+     |   |   └── UserFactory.php
      |   |
      |   |-- migrations/
 -    |   |   |-- 2014_10_12_000000_create_users_table.php
@@ -68,65 +68,65 @@ LaravelAPIGateway/
 -    |   |   |-- 2019_12_14_000001_create_personal_access_tokens_table.php
 +    |   |   |-- 2024_01_02_030001_create_users_table.php
 +    |   |   |-- 2024_01_02_031519_create_contacts_table.php
-+    |   |   |-- 2024_01_02_032757_create_addresses_table.php
++    |   |   └── 2024_01_02_032757_create_addresses_table.php
      |   |
      |   |-- seeders/
 +    |   |   |-- AddressSeeder.php
 +    |   |   |-- ContactSeeder.php
      |   |   |-- DatabaseSeeder.php
-+    |   |   |-- UserSeeder.php
++    |   |   └── UserSeeder.php
      |   |
-     |   |-- .gitignore
+     |   └── .gitignore
      |
 +    |-- docs/
-+    |   |-- user-api.json
++    |   └── user-api.json
      |
      |-- public/
      |   |-- css/
      |   |
      |   |-- js/
      |   |
-     |   |-- images/
+     |   └── images/
      |
      |-- resources/
      |   |-- lang/
      |   |
-     |   └──  views/
+     |   └── views/
      |
      |-- routes/
      |
      |-- storage/
      |   |-- app/
      |   |   |-- public/
-     |   |   |   |-- .gitignore
+     |   |   |   └── .gitignore
      |   |   |
-     |   |   |-- .gitignore
+     |   |   └── .gitignore
      |   |
      |   |-- framework/
      |   |   |-- cache/
      |   |   |   |-- data/
-     |   |   |   |   |-- .gitignore
+     |   |   |   |   └── .gitignore
      |   |   |   |
-     |   |   |   |-- .gitignore
+     |   |   |   └── .gitignore
      |   |   |
      |   |   |-- sessions/
      |   |   |
      |   |   |-- testing/
      |   |   |
-     |   |   |-- views/
+     |   |   └── views/
      |   |
-     |   |-- logs/
+     |   └── logs/
      |
      |-- tests/
      |   |-- Feature/
      |   |   |-- ExampleTest.php
-+    |   |   |-- UserTest.php
++    |   |   └── UserTest.php
      |   |
      |   |-- Unit/
-     |   |   |-- ExampleTest.php
+     |   |   └── ExampleTest.php
      |   |
      |   |-- CreatesApplication.php
-     |   |-- TestCase.php
+     |   └── TestCase.php
      |
      |-- vendor/
      |
@@ -144,5 +144,5 @@ LaravelAPIGateway/
      |-- phpunit.xml
      |-- README.md
 +    |-- vercel.json
--    |-- vite.config.js
+-    └── vite.config.js
 ```
