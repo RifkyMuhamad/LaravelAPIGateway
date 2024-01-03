@@ -91,7 +91,7 @@ LaravelAPIGateway/
      |-- resources/
      |   |-- lang/
      |   |
-     |   |-- views/
+     |   └──  views/
      |
      |-- routes/
      |

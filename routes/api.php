@@ -26,7 +26,7 @@ Route::get('/', function () {
     return response()->json([
         "message" => "DyoneStrankers use Laravel",
         "documentation" => "https://github.com/RifkyMuhamad/LaravelAPIGateway"
-    ]);
+    ], 200, [], JSON_UNESCAPED_SLASHES);
 });
 
 Route::post('/users', [UserController::class, 'register']);
@@ -39,7 +39,7 @@ Route::middleware(ApiAuthMiddleware::class)->group(function () {
 });
 
 Route::get('/dyone', function () {
-    
+
     $fakeData = [
         'id' => "dyonese",
         'name' => "Dyonese",
