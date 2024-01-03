@@ -1,5 +1,7 @@
 # DyoneStrankers Laravel API
 
+## [Endpoint Click This](https://github.com/RifkyMuhamad/LaravelAPIGateway/blob/main/docs/api-spec.md)
+
 ## Project Structure
 ```diff
 LaravelAPIGateway/
