@@ -7,11 +7,11 @@
     },
     "servers" : [
         {
-            "url" : "http://localhost:8000"
+            "url" : "https://dyonestrankers-laravel-api.vercel.app/"
         }
     ],
     "paths" : {
-        "/api/users" : {
+        "/users" : {
             "post" : {
                 "description" : "Register new user",
                 "requestBody" : {
@@ -116,7 +116,7 @@
                 }
             }
         },
-        "/api/users/login" : {
+        "/users/login" : {
             "post" : {
                 "description" : "Login user",
                 "requestBody" : {
@@ -172,7 +172,7 @@
                 }
             }
         },
-        "/api/users/current" : {
+        "/users/current" : {
             "get" : {
                 "description" : "Get current user",
                 "parameters": [
@@ -272,7 +272,7 @@
                 }
             }
         },
-        "/api/users/logout" : {
+        "/users/logout" : {
             "delete" : {
                 "description" : "Logout current user",
                 "parameters": [
