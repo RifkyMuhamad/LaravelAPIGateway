@@ -7,6 +7,7 @@
 https://dyonestrankers-laravel-api.vercel.app/
 ```
 | Endpoint | Method | Schema |
+| --- | --- | --- |
 | /users | Post | {
   "username": "dyone",
   "password": "rahasia",
