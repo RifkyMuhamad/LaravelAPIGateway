@@ -19,27 +19,18 @@ class ApiAuthMiddleware
     {
         $token = $request->header("Authorization");
         $authenticate = true;
-
-        if (!$token)
-        {
+        if (!$token) {
             $authenticate = false;
         }
-
         $user = User::where("token", $token)->first();
-
-        if (!$user)
-        {
+        if (!$user){
             $authenticate = false;
-        } else 
-        {
+        } else {
             Auth::login($user);
         }
-
-        if ($authenticate)
-        {
+        if ($authenticate) {
             return $next($request);
-        } else 
-        {
+        } else {
             return response()->json([
                 "errors" => [
                     "message" => [

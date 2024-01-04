@@ -24,10 +24,6 @@ class User extends Model implements Authenticatable
         "name"
     ];
 
-    /**
-     * user_id dari table contacts
-     * id dari table users
-     */
     public function contacts():HasMany
     {
         return $this->hasMany(Contact::class, "user_id", "id");
@@ -50,8 +46,7 @@ class User extends Model implements Authenticatable
 
     public function getRememberToken()
     {
-        // hanya dummy
-        return $this->token;
+        return $this->token; // hanya dummy
     }
 
     public function setRememberToken($value)

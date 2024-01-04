@@ -6,8 +6,6 @@ use App\Models\Contact;
 use Database\Seeders\ContactSeeder;
 use Database\Seeders\SearchSeeder;
 use Database\Seeders\UserSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
@@ -20,14 +18,16 @@ class ContactTest extends TestCase
     {
         $this->seed([UserSeeder::class]);
 
-        $this->post('/contacts', [
-            'first_name' => 'Dyone',
-            'last_name' => 'Strankers',
-            'email' => 'dyone@dyone.com',
-            'phone' => '082121212121'
-        ], [
-            'Authorization' => 'test'
-        ])->assertStatus(201)
+        $this->post(
+            DontUseTest::contactsRoute(),
+            [
+                'first_name' => 'Dyone',
+                'last_name' => 'Strankers',
+                'email' => 'dyone@dyone.com',
+                'phone' => '082121212121'
+            ],
+            DontUseTest::correctAuthorization()
+        )->assertStatus(201)
             ->assertJson([
                 'data' => [
                     'first_name' => 'Dyone',
@@ -45,14 +45,16 @@ class ContactTest extends TestCase
     {
         $this->seed([UserSeeder::class]);
 
-        $this->post('/contacts', [
-            'first_name' => '',
-            'last_name' => 'Strankers',
-            'email' => 'dyoneAja',
-            'phone' => '082121212121'
-        ], [
-            'Authorization' => 'test'
-        ])->assertStatus(400)
+        $this->post(
+            DontUseTest::contactsRoute(),
+            [
+                'first_name' => '',
+                'last_name' => 'Strankers',
+                'email' => 'dyoneAja',
+                'phone' => '082121212121'
+            ],
+            DontUseTest::correctAuthorization()
+        )->assertStatus(400)
             ->assertJson([
                 'errors' => [
                     'first_name' => [
@@ -72,21 +74,17 @@ class ContactTest extends TestCase
     {
         $this->seed([UserSeeder::class]);
 
-        $this->post('/contacts', [
-            'first_name' => '',
-            'last_name' => 'Strankers',
-            'email' => 'dyoneAja',
-            'phone' => '082121212121'
-        ], [
-            'Authorization' => 'salah'
-        ])->assertStatus(401)
-            ->assertJson([
-                'errors' => [
-                    'message' => [
-                        'unauthorized'
-                    ]
-                ]
-            ]);
+        $this->post(
+            DontUseTest::contactsRoute(),
+            [
+                'first_name' => '',
+                'last_name' => 'Strankers',
+                'email' => 'dyoneAja',
+                'phone' => '082121212121'
+            ],
+            DontUseTest::wrongAuthorization()
+        )->assertStatus(401)
+            ->assertJson(DontUseTest::unAuthorized());
     }
 
     /**
@@ -96,11 +94,10 @@ class ContactTest extends TestCase
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
 
-        $contact = Contact::query()->limit(1)->first();
-
-        $this->get('/contacts/' . $contact->id, [
-            'Authorization' => 'test'
-        ])->assertStatus(200)
+        $this->get(
+            DontUseTest::contactsIdContactRoute(),
+            DontUseTest::correctAuthorization()
+        )->assertStatus(200)
             ->assertJson([
                 'data' => [
                     'first_name' => 'test',
@@ -118,18 +115,11 @@ class ContactTest extends TestCase
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
 
-        $contact = Contact::query()->limit(1)->first();
-
-        $this->get('/contacts/' . ($contact->id + 1), [
-            'Authorization' => 'test'
-        ])->assertStatus(404)
-            ->assertJson([
-                'errors' => [
-                    'message' => [
-                        'not found'
-                    ]
-                ]
-            ]);
+        $this->get(
+            DontUseTest::contactsIdContactRouteWrong(),
+            DontUseTest::correctAuthorization()
+        )->assertStatus(404)
+            ->assertJson(DontUseTest::notFoundResponse());
     }
 
     /**
@@ -139,18 +129,11 @@ class ContactTest extends TestCase
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
 
-        $contact = Contact::query()->limit(1)->first();
-
-        $this->get('/contacts/' . $contact->id, [
-            'Authorization' => 'test2'
-        ])->assertStatus(404)
-            ->assertJson([
-                'errors' => [
-                    'message' => [
-                        'not found'
-                    ]
-                ]
-            ]);
+        $this->get(
+            DontUseTest::contactsIdContactRoute(),
+            DontUseTest::correctAuthorizationTwo()
+        )->assertStatus(404)
+            ->assertJson(DontUseTest::notFoundResponse());
     }
 
     /**
@@ -160,24 +143,14 @@ class ContactTest extends TestCase
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
 
-        $contact = Contact::query()->limit(1)->first();
-
-        $this->put('/contacts/' . $contact->id, [
-            'first_name' => 'test2',
-            'last_name' => 'test2',
-            'email' => 'test2@dyone.com',
-            'phone' => '086464646462',
-        ], [
-            'Authorization' => 'test'
-        ])->assertStatus(200)
-            ->assertJson([
-                'data' => [
-                    'first_name' => 'test2',
-                    'last_name' => 'test2',
-                    'email' => 'test2@dyone.com',
-                    'phone' => '086464646462',
-                ]
-            ]);
+        $this->put(
+            DontUseTest::contactsIdContactRoute(), 
+            DontUseTest::updateSuccess(),
+            DontUseTest::correctAuthorization()
+            )->assertStatus(200)
+                ->assertJson([
+                    'data' => DontUseTest::updateSuccess()
+                ]);
     }
 
     /**
@@ -187,74 +160,61 @@ class ContactTest extends TestCase
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
 
-        $contact = Contact::query()->limit(1)->first();
-
-        $this->put('/contacts/' . $contact->id, [
+        $this->put(
+            DontUseTest::contactsIdContactRoute(), [
             'first_name' => '',
             'last_name' => 'test2',
             'email' => 'test2@dyone.com',
             'phone' => '086464646462',
-        ], [
-            'Authorization' => 'test'
-        ])->assertStatus(400)
-            ->assertJson([
-                'errors' => [
-                    'first_name' => [
-                        "The first name field is required."
-                    ]
-                ]
-            ]);
+        ], DontUseTest::correctAuthorization()
+        )->assertStatus(400)
+            ->assertJson(DontUseTest::firstNameFieldIsRequired());
     }
 
     /**
      * @test
      */
-    public function deleteSuccess():void
+    public function deleteSuccess(): void
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
 
-        $contact = Contact::query()->limit(1)->first();
-
-        $this->delete('/contacts/' . $contact->id, [], [
-            'Authorization' => 'test'
-        ])->assertStatus(200)
-            ->assertJson([
-                'data' => true
-            ]);
+        $this->delete(
+            DontUseTest::contactsIdContactRoute(),
+            [],
+            DontUseTest::correctAuthorization()
+            )->assertStatus(200)
+                ->assertJson([
+                    'data' => true
+                ]);
     }
 
     /**
      * @test
      */
-    public function deleteNotFound():void
+    public function deleteNotFound(): void
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
 
-        $contact = Contact::query()->limit(1)->first();
-
-        $this->delete('/contacts/' . ($contact->id + 1), [], [
-            'Authorization' => 'test'
-        ])->assertStatus(404)
-            ->assertJson([
-                'errors' => [
-                    'message' => [
-                        'not found'
-                    ]
-                ]
-            ]);
+        $this->delete(
+            DontUseTest::contactsIdContactRouteWrong(), 
+            [], 
+            DontUseTest::correctAuthorization()
+            )->assertStatus(404)
+                ->assertJson(DontUseTest::notFoundResponse());
     }
 
     /**
      * @test
      */
-    public function searchByFirstName():void
+    public function searchByFirstName(): void
     {
         $this->seed([UserSeeder::class, SearchSeeder::class]);
 
-        $response = $this->get('/contacts?name=first', [
-            'Authorization' => 'test'
-        ])->assertStatus(200)
-            ->json();
+        $response = $this->get(
+            '/contacts?name=first', 
+            DontUseTest::correctAuthorization()
+            )->assertStatus(200)
+                ->json();
 
         Log::info(json_encode($response, JSON_PRETTY_PRINT));
 
@@ -265,14 +225,15 @@ class ContactTest extends TestCase
     /**
      * @test
      */
-    public function searchByLastName():void
+    public function searchByLastName(): void
     {
         $this->seed([UserSeeder::class, SearchSeeder::class]);
 
-        $response = $this->get('/contacts?name=last', [
-            'Authorization' => 'test'
-        ])->assertStatus(200)
-            ->json();
+        $response = $this->get(
+            '/contacts?name=last', 
+            DontUseTest::correctAuthorization()
+            )->assertStatus(200)
+                ->json();
 
         Log::info(json_encode($response, JSON_PRETTY_PRINT));
 
@@ -283,14 +244,15 @@ class ContactTest extends TestCase
     /**
      * @test
      */
-    public function searchByEmail():void
+    public function searchByEmail(): void
     {
         $this->seed([UserSeeder::class, SearchSeeder::class]);
 
-        $response = $this->get('/contacts?email=test', [
-            'Authorization' => 'test'
-        ])->assertStatus(200)
-            ->json();
+        $response = $this->get(
+            '/contacts?email=test',
+            DontUseTest::correctAuthorization()
+            )->assertStatus(200)
+                ->json();
 
         Log::info(json_encode($response, JSON_PRETTY_PRINT));
 
@@ -301,14 +263,15 @@ class ContactTest extends TestCase
     /**
      * @test
      */
-    public function searchByPhone():void
+    public function searchByPhone(): void
     {
         $this->seed([UserSeeder::class, SearchSeeder::class]);
 
-        $response = $this->get('/contacts?phone=08818181818', [
-            'Authorization' => 'test'
-        ])->assertStatus(200)
-            ->json();
+        $response = $this->get(
+            '/contacts?phone=08818181818',
+            DontUseTest::correctAuthorization()
+            )->assertStatus(200)
+                ->json();
 
         Log::info(json_encode($response, JSON_PRETTY_PRINT));
 
@@ -319,14 +282,15 @@ class ContactTest extends TestCase
     /**
      * @test
      */
-    public function searchNotFound():void
+    public function searchNotFound(): void
     {
         $this->seed([UserSeeder::class, SearchSeeder::class]);
 
-        $response = $this->get('/contacts?name=salah', [
-            'Authorization' => 'test'
-        ])->assertStatus(200)
-            ->json();
+        $response = $this->get(
+            '/contacts?name=salah', 
+            DontUseTest::correctAuthorization()
+            )->assertStatus(200)
+                ->json();
 
         Log::info(json_encode($response, JSON_PRETTY_PRINT));
 
@@ -337,14 +301,15 @@ class ContactTest extends TestCase
     /**
      * @test
      */
-    public function searchWithPage():void
+    public function searchWithPage(): void
     {
         $this->seed([UserSeeder::class, SearchSeeder::class]);
 
-        $response = $this->get('/contacts?size=5&page=2', [
-            'Authorization' => 'test'
-        ])->assertStatus(200)
-            ->json();
+        $response = $this->get(
+            '/contacts?size=5&page=2', 
+            DontUseTest::correctAuthorization()
+            )->assertStatus(200)
+                ->json();
 
         Log::info(json_encode($response, JSON_PRETTY_PRINT));
 

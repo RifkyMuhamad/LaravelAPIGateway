@@ -17,26 +17,13 @@ class AddressTest extends TestCase
     public function createSuccess(): void
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
-        $contact = Contact::query()->limit(1)->first();
 
-        $this->post('/contacts/' . $contact->id . '/addresses', [
-            'street' => 'Sukaraja',
-            'city' => 'Majalengka',
-            'province' => 'Jawa Barat',
-            'country' => 'Indonesia',
-            'postal_code' => '45454'
-        ], [
-            'Authorization' => 'test'
-        ])->assertStatus(201)
-            ->assertJson([
-                'data' => [
-                    'street' => 'Sukaraja',
-                    'city' => 'Majalengka',
-                    'province' => 'Jawa Barat',
-                    'country' => 'Indonesia',
-                    'postal_code' => '45454'
-                ]
-            ]);
+        $this->post(
+            DontUseTest::contactsIdContactAddressesRoute(),
+            DontUseTest::addressCompleted(),
+            DontUseTest::correctAuthorization()
+        )->assertStatus(201)
+            ->assertJson(DontUseTest::dataAddressCompleted());
     }
 
     /**
@@ -45,24 +32,17 @@ class AddressTest extends TestCase
     public function createFailed(): void
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
-        $contact = Contact::query()->limit(1)->first();
 
-        $this->post('/contacts/' . $contact->id . '/addresses', [
+        $this->post(
+            DontUseTest::contactsIdContactAddressesRoute(), [
             'street' => 'Sukaraja',
             'city' => 'Majalengka',
             'province' => 'Jawa Barat',
             'country' => '',
             'postal_code' => '45454'
-        ], [
-            'Authorization' => 'test'
-        ])->assertStatus(400)
-            ->assertJson([
-                'errors' => [
-                    'country' => [
-                        'The country field is required.'
-                    ]
-                ]
-            ]);
+        ], DontUseTest::correctAuthorization()
+        )->assertStatus(400)
+            ->assertJson(DontUseTest::countryFieldIsRequired());
     }
 
     /**
@@ -71,24 +51,13 @@ class AddressTest extends TestCase
     public function createContactNotFound(): void
     {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
-        $contact = Contact::query()->limit(1)->first();
 
-        $this->post('/contacts/' . ($contact->id + 1) . '/addresses', [
-            'street' => 'Sukaraja',
-            'city' => 'Majalengka',
-            'province' => 'Jawa Barat',
-            'country' => 'Indonesia',
-            'postal_code' => '45454'
-        ], [
-            'Authorization' => 'test'
-        ])->assertStatus(404)
-            ->assertJson([
-                'errors' => [
-                    'message' => [
-                        'not found'
-                    ]
-                ]
-            ]);
+        $this->post(
+            DontUseTest::contactsIdContactAddressesRouteWrong(),
+            DontUseTest::addressSuccessResponse(),
+            DontUseTest::correctAuthorization()
+        )->assertStatus(404)
+            ->assertJson(DontUseTest::notFoundResponse());
     }
 
     /**
@@ -98,20 +67,13 @@ class AddressTest extends TestCase
     {
         $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
 
-        $address = Address::query()->limit(1)->first();
-
-        $this->get('/contacts/' . $address->contact_id . '/addresses/' . $address->id, [
-            'Authorization' => 'test'
-        ])->assertStatus(200)
-            ->assertJson([
-                'data' => [
-                    'street' => 'Sukaraja',
-                    'city' => 'Majalengka',
-                    'province' => 'Jawa Barat',
-                    'country' => 'Indonesia',
-                    'postal_code' => '45454'
-                ]
-            ]);
+        $this->get(
+            DontUseTest::contactsIdContactAddressesIdAddressRoute(), 
+            DontUseTest::correctAuthorization()
+            )->assertStatus(200)
+                ->assertJson([
+                    'data' => DontUseTest::addressSuccessResponse()
+                ]);
     }
 
     /**
@@ -121,18 +83,11 @@ class AddressTest extends TestCase
     {
         $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
 
-        $address = Address::query()->limit(1)->first();
-
-        $this->get('/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1), [
-            'Authorization' => 'test'
-        ])->assertStatus(404)
-            ->assertJson([
-                'errors' => [
-                    'message' => [
-                        'not found'
-                    ]
-                ]
-            ]);
+        $this->get(
+            DontUseTest::contactsIdContactAddressesIdAddressRouteWrong(), 
+            DontUseTest::correctAuthorization()
+            )->assertStatus(404)
+                ->assertJson(DontUseTest::notFoundResponse());
     }
 
     /**
@@ -142,17 +97,15 @@ class AddressTest extends TestCase
     {
         $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
 
-        $address = Address::query()->limit(1)->first();
-
-        $this->put('/contacts/' . $address->contact_id . '/addresses/' . $address->id, [
+        $this->put(
+            DontUseTest::contactsIdContactAddressesIdAddressRoute(), [
             'street' => 'Sukaraja Update',
             'city' => 'Majalengka Update',
             'province' => 'Jawa Barat Update',
             'country' => 'Indonesia Update',
             'postal_code' => '99999'
-        ], [
-            'Authorization' => 'test'
-        ])->assertStatus(200)
+        ], DontUseTest::correctAuthorization()
+        )->assertStatus(200)
             ->assertJson([
                 'data' => [
                     'street' => 'Sukaraja Update',
@@ -171,24 +124,15 @@ class AddressTest extends TestCase
     {
         $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
 
-        $address = Address::query()->limit(1)->first();
-
-        $this->put('/contacts/' . $address->contact_id . '/addresses/' . $address->id, [
+        $this->put(
+            DontUseTest::contactsIdContactAddressesIdAddressRoute(), [
             'street' => 'Sukaraja Update',
             'city' => 'Majalengka Update',
             'province' => 'Jawa Barat Update',
             'country' => '',
             'postal_code' => '99999'
-        ], [
-            'Authorization' => 'test'
-        ])->assertStatus(400)
-            ->assertJson([
-                'errors' => [
-                    'country' => [
-                        'The country field is required.'
-                    ]
-                ]
-            ]);
+        ], DontUseTest::correctAuthorization())->assertStatus(400)
+            ->assertJson(DontUseTest::countryFieldIsRequired());
     }
 
     /**
@@ -198,24 +142,15 @@ class AddressTest extends TestCase
     {
         $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
 
-        $address = Address::query()->limit(1)->first();
-
-        $this->put('/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1), [
+        $this->put(DontUseTest::contactsIdContactAddressesIdAddressRouteWrong(), [
             'street' => 'Sukaraja Update',
             'city' => 'Majalengka Update',
             'province' => 'Jawa Barat Update',
             'country' => 'Indonesia Update',
             'postal_code' => '99999'
-        ], [
-            'Authorization' => 'test'
-        ])->assertStatus(404)
-            ->assertJson([
-                'errors' => [
-                    'message' => [
-                        'not found'
-                    ]
-                ]
-            ]);
+        ], DontUseTest::correctAuthorization()
+        )->assertStatus(404)
+            ->assertJson(DontUseTest::notFoundResponse());
     }
 
     /**
@@ -225,14 +160,14 @@ class AddressTest extends TestCase
     {
         $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
 
-        $address = Address::query()->limit(1)->first();
-
-        $this->delete('/contacts/' . $address->contact_id . '/addresses/' . $address->id, [], [
-            'Authorization' => 'test'
-        ])->assertStatus(200)
-            ->assertJson([
-                'data' => true
-            ]);
+        $this->delete(
+            DontUseTest::contactsIdContactAddressesIdAddressRoute(), 
+            [], 
+            DontUseTest::correctAuthorization()
+            )->assertStatus(200)
+                ->assertJson([
+                    'data' => true
+                ]);
     }
 
     /**
@@ -244,16 +179,8 @@ class AddressTest extends TestCase
 
         $address = Address::query()->limit(1)->first();
 
-        $this->delete('/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1), [], [
-            'Authorization' => 'test'
-        ])->assertStatus(404)
-            ->assertJson([
-                'errors' => [
-                    'message' => [
-                        'not found'
-                    ]
-                ]
-            ]);
+        $this->delete('/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1), [], DontUseTest::correctAuthorization())->assertStatus(404)
+            ->assertJson(DontUseTest::notFoundResponse());
     }
 
     /**
@@ -263,20 +190,14 @@ class AddressTest extends TestCase
     {
         $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
 
-        $contact = Contact::query()->limit(1)->first();
 
-        $this->get('/contacts/' . $contact->id . '/addresses/', [
-            'Authorization' => 'test'
-        ])->assertStatus(200)
+        $this->get(
+            DontUseTest::contactsIdContactAddressesRoute(), 
+            DontUseTest::correctAuthorization()
+            )->assertStatus(200)
             ->assertJson([
                 'data' => [
-                    [
-                        'street' => 'Sukaraja',
-                        'city' => 'Majalengka',
-                        'province' => 'Jawa Barat',
-                        'country' => 'Indonesia',
-                        'postal_code' => '45454'
-                    ]
+                    DontUseTest::addressSuccessResponse()
                 ]
             ]);
     }
@@ -288,17 +209,10 @@ class AddressTest extends TestCase
     {
         $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
 
-        $contact = Contact::query()->limit(1)->first();
-
-        $this->get('/contacts/' . ($contact->id + 1) . '/addresses/', [
-            'Authorization' => 'test'
-        ])->assertStatus(404)
-        ->assertJson([
-            'errors' => [
-                'message' => [
-                    'not found'
-                ]
-            ]
-        ]);
+        $this->get(
+            DontUseTest::contactsIdContactAddressesRouteWrong(),
+            DontUseTest::correctAuthorization()
+            )->assertStatus(404)
+                ->assertJson(DontUseTest::notFoundResponse());
     }
 }

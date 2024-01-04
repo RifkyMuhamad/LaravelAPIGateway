@@ -15,7 +15,8 @@ class UserTest extends TestCase
      */
     public function registerSuccess(): void
     {
-        $this->post('/users', [
+        $this->post(
+            DontUseTest::usersRoute(), [
             "username" => "dyone",
             "password" => "rahasia123",
             "name" => "Dyone Strankers"
@@ -33,18 +34,13 @@ class UserTest extends TestCase
      */
     public function registerFailed(): void
     {
-        $this->post('/users', [
+        $this->post(
+            DontUseTest::usersRoute(), [
             "username" => "",
             "password" => "",
             "name" => ""
         ])->assertStatus(400)
-            ->assertJson([
-                "errors" => [
-                    "username" => ["The username field is required."],
-                    "password" => ["The password field is required."],
-                    "name" => ["The name field is required."],
-                ]
-            ]);
+            ->assertJson(DontUseTest::usernamePasswordNameRequired());
     }
 
     /**
@@ -53,18 +49,13 @@ class UserTest extends TestCase
     public function registerAlreadyExist(): void
     {
         $this->registerSuccess();
-        $this->post('/users', [
+        $this->post(
+            DontUseTest::usersRoute(), [
             "username" => "dyone",
             "password" => "rahasia123",
             "name" => "Dyone Strankers"
         ])->assertStatus(400)
-            ->assertJson([
-                "errors" => [
-                    "username" => [
-                        "username already registered"
-                    ]
-                ]
-            ]);
+            ->assertJson(DontUseTest::usernameAlreadyRegistered());
     }
 
     /**
@@ -73,7 +64,7 @@ class UserTest extends TestCase
     public function loginSuccess(): void
     {
         $this->seed([UserSeeder::class]);
-        $this->post('/users/login', [
+        $this->post(DontUseTest::usersLoginRoute(), [
             "username" => "test",
             "password" => "test",
         ])->assertStatus(200)
@@ -84,7 +75,7 @@ class UserTest extends TestCase
                 ]
             ]);
 
-        $user = User::where("username", "test")->first();
+        $user = DontUseTest::userWhereUsernameTest();
         self::assertNotNull($user->token);
     }
 
@@ -93,17 +84,11 @@ class UserTest extends TestCase
      */
     public function loginFailed(): void
     {
-        $this->post('/users/login', [
+        $this->post(DontUseTest::usersLoginRoute(), [
             "username" => "test",
             "password" => "test",
         ])->assertStatus(401)
-            ->assertJson([
-                "errors" => [
-                    "message" => [
-                        "username or password wrong"
-                    ]
-                ]
-            ]);
+            ->assertJson(DontUseTest::usernameOrPasswordWrong());
     }
 
     /**
@@ -112,17 +97,11 @@ class UserTest extends TestCase
     public function loginFailedWrongPassword(): void
     {
         $this->seed([UserSeeder::class]);
-        $this->post('/users/login', [
+        $this->post(DontUseTest::usersLoginRoute(), [
             "username" => "test",
             "password" => "salah",
         ])->assertStatus(401)
-            ->assertJson([
-                "errors" => [
-                    "message" => [
-                        "username or password wrong"
-                    ]
-                ]
-            ]);
+            ->assertJson(DontUseTest::usernameOrPasswordWrong());
     }
 
     /**
@@ -132,15 +111,16 @@ class UserTest extends TestCase
     {
         $this->seed([UserSeeder::class]);
 
-        $this->get('/users/current', [
-            "Authorization" => "test"
-        ])->assertStatus(200)
-            ->assertJson([
-                "data" => [
-                    "username" => "test",
-                    "name" => "test"
-                ]
-            ]);
+        $this->get(
+            DontUseTest::usersCurrentRoute(), 
+            DontUseTest::correctAuthorization()
+            )->assertStatus(200)
+                ->assertJson([
+                    "data" => [
+                        "username" => "test",
+                        "name" => "test"
+                    ]
+                ]);
     }
 
     /**
@@ -150,15 +130,9 @@ class UserTest extends TestCase
     {
         $this->seed([UserSeeder::class]);
 
-        $this->get('/users/current')
+        $this->get(DontUseTest::usersCurrentRoute())
             ->assertStatus(401)
-            ->assertJson([
-                "errors" => [
-                    "message" => [
-                        "unauthorized"
-                    ],
-                ]
-            ]);
+            ->assertJson(DontUseTest::unAuthorized());
     }
 
     /**
@@ -168,16 +142,9 @@ class UserTest extends TestCase
     {
         $this->seed([UserSeeder::class]);
 
-        $this->get('/users/current', [
+        $this->get(DontUseTest::usersCurrentRoute(), [
             "Authorization" => "salah"
-        ])->assertStatus(401)
-            ->assertJson([
-                "errors" => [
-                    "message" => [
-                        "unauthorized"
-                    ],
-                ]
-            ]);
+        ])->assertStatus(401)->assertJson(DontUseTest::unAuthorized());
     }
 
     /**
@@ -186,16 +153,14 @@ class UserTest extends TestCase
     public function updatePasswordSuccess()
     {
         $this->seed([UserSeeder::class]);
-        $oldUser = User::where("username", 'test')->first();
+        $oldUser = DontUseTest::userWhereUsernameTest();
 
         $this->patch(
-            '/users/current',
+            DontUseTest::usersCurrentRoute(),
             [
                 "password" => "baru"
             ],
-            [
-                "Authorization" => "test"
-            ]
+            DontUseTest::correctAuthorization()
         )->assertStatus(200)
             ->assertJson([
                 "data" => [
@@ -204,7 +169,7 @@ class UserTest extends TestCase
                 ]
             ]);
 
-        $newUser = User::where("username", 'test')->first();
+        $newUser = DontUseTest::userWhereUsernameTest();
 
         self::assertNotEquals($oldUser->password, $newUser->password);
     }
@@ -215,16 +180,14 @@ class UserTest extends TestCase
     public function updateNameSuccess()
     {
         $this->seed([UserSeeder::class]);
-        $oldUser = User::where("username", 'test')->first();
+        $oldUser = DontUseTest::userWhereUsernameTest();
 
         $this->patch(
-            '/users/current',
+            DontUseTest::usersCurrentRoute(),
             [
                 "name" => "DyoneStrankers"
             ],
-            [
-                "Authorization" => "test"
-            ]
+            DontUseTest::correctAuthorization()
         )->assertStatus(200)
             ->assertJson([
                 "data" => [
@@ -233,7 +196,7 @@ class UserTest extends TestCase
                 ]
             ]);
 
-        $newUser = User::where("username", 'test')->first();
+        $newUser = DontUseTest::userWhereUsernameTest();
 
         self::assertNotEquals($oldUser->name, $newUser->name);
     }
@@ -246,13 +209,11 @@ class UserTest extends TestCase
         $this->seed([UserSeeder::class]);
 
         $this->patch(
-            '/users/current',
+            DontUseTest::usersCurrentRoute(),
             [
                 "name" => "WleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleoWleo"
             ],
-            [
-                "Authorization" => "test"
-            ]
+            DontUseTest::correctAuthorization()
         )->assertStatus(400)
             ->assertJson([
                 "errors" => [
@@ -270,14 +231,12 @@ class UserTest extends TestCase
     {
         $this->seed([UserSeeder::class]);
 
-        $this->delete(uri: '/users/logout', headers: [
-            'Authorization' => "test"
-        ])->assertStatus(200)
+        $this->delete(uri: '/users/logout', headers: DontUseTest::correctAuthorization())->assertStatus(200)
             ->assertJson([
                 "data" => true
             ]);
 
-        $user = User::where("username", "test")->first();
+        $user = DontUseTest::userWhereUsernameTest();
         self::assertNull($user->token);
     }
 
@@ -290,13 +249,6 @@ class UserTest extends TestCase
 
         $this->delete(uri: '/users/logout', headers: [
             'Authorization' => "salah"
-        ])->assertStatus(401)
-            ->assertJson([
-                "errors" => [
-                    "message" => [
-                        "unauthorized"
-                    ]
-                ]
-            ]);
+        ])->assertStatus(401)->assertJson(DontUseTest::unAuthorized());
     }
 }
